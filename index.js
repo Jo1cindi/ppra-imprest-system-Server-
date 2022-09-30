@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const bodyParser  = require("body-parser");
 const app = express();
-const cors = require("cors")
+const cors = require("cors");
 
 app.use(express.json({extended: false}))
 app.use(cors({
@@ -12,17 +12,20 @@ app.use(cors({
 }))
 
 
+
+
 app.use(bodyParser.json());;
 
 const employeeRouter  = require("./api/employees/employee.router")
-app.use("/api/employee", employeeRouter)
+app.use("/api", employeeRouter)
+
 
 const accountantRouter = require("./api/accountant/accountant.router")
-app.use("/api/accountant", accountantRouter)
+app.use("/api", accountantRouter)
 
 const fmRouter  = require("./api/financemanager/financemanager.router")
-app.use("/api/finance-manager",fmRouter)
+app.use("/api",fmRouter)
 
-app.listen(process.env.PORT || 3005, ()=>{
+app.listen(process.env.PORT || 3006, ()=>{
     console.log(`Server is perfectly running on ${process.env.PORT}`)
 })
