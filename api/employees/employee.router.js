@@ -85,7 +85,7 @@ router.post("/employee-login", (req, res) => {
             result[0].employee_id
           );
           return res.status(200).send({
-            message: "logged in!",
+            message: "Log in successful!",
             token,
           });
         } else {
@@ -96,6 +96,27 @@ router.post("/employee-login", (req, res) => {
       }
     }
   );
+});
+
+//Reset password
+router.put("/employee-reset", (req, res)=>{
+  const email = req.body.email
+  const newPassword = req.body.password;
+  bcrypt.hash(newPassword, 10).then((encryptedPassword)=>{
+   dbConnection.query(`update employees set password = ? where email = ?`,[encryptedPassword, email], 
+   (err, result)=>{
+     if(err){
+      res.status(500).send({
+        message: "error"
+      });
+     }
+     if(result){
+      res.status(200).send({
+        message: "passoword updated successfully"
+      });
+     }
+   });
+  });
 });
 
 module.exports = router;

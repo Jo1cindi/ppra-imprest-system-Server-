@@ -76,7 +76,7 @@ router.post("/financemanager-login", (req, res) => {
             result[0].financemanager_id
           );
           return res.status(200).send({
-            message: "logged in!",
+            message: "Log in successful!",
             token,
           });
         } else {
@@ -87,6 +87,27 @@ router.post("/financemanager-login", (req, res) => {
       }
     }
   );
+});
+
+//Reset password
+router.put("/financemanager-reset", (req, res)=>{
+  const email = req.body.email
+  const newPassword = req.body.password;
+  bcrypt.hash(newPassword, 10).then((encryptedPassword)=>{
+   dbConnection.query(`update finance_manager set password = ? where email = ?`,[encryptedPassword, email], 
+   (err, result)=>{
+     if(err){
+      res.status(500).send({
+        message: "error"
+      });
+     }
+     if(result){
+      res.status(200).send({
+        message: "password updated successfully"
+      });
+     }
+   });
+  });
 });
 
 module.exports = router;

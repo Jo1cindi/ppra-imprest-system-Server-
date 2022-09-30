@@ -83,11 +83,11 @@ router.post("/accountant-login", (req, res) => {
             { expiresIn: "2h" }
           );
           dbConnection.query(
-            `update accountant set lastLogin = now() where employee_id = ?`,
+            `update accountant set lastLogin = now() where accountant_id = ?`,
             result[0].accountant_id
           );
           return res.status(200).send({
-            message: "logged in!",
+            message: "Log in successful!",
             token,
           });
         } else {
@@ -98,6 +98,27 @@ router.post("/accountant-login", (req, res) => {
       }
     }
   );
+});
+
+//Reset password
+router.put("/accountant-reset", (req, res)=>{
+  const email = req.body.email
+  const newPassword = req.body.password;
+  bcrypt.hash(newPassword, 10).then((encryptedPassword)=>{
+   dbConnection.query(`update accountant set password = ? where email = ?`,[encryptedPassword, email], 
+   (err, result)=>{
+     if(err){
+      res.status(500).send({
+        message: "error"
+      });
+     }
+     if(result){
+      res.status(200).send({
+        message: "passoword updated successfully"
+      });
+     }
+   });
+  });
 });
 
 module.exports = router;
