@@ -76,11 +76,10 @@ router.post("/accountant-login", (req, res) => {
       } else if (result.length > 0) {
         const compare = bcrypt.compareSync(password, result[0].password);
         if (compare) {
-          let jwtSecretKey = process.env.JWT_SECRET_KEY;
           // const jwtExpirySeconds = 300
           const token = jwt.sign(
             { id: result[0].accountant_id.toString() },
-            jwtSecretKey,
+            `${process.env.JWT_SECRET_KEY}`,
             { expiresIn: "2h" }
           );
           dbConnection.query(
