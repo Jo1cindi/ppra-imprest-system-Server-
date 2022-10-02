@@ -87,6 +87,8 @@ router.post("/employee-login", (req, res) => {
           return res.status(200).send({
             message: "Log in successful!",
             token,
+            firstName: result[0].firstName,
+            lastName: result[0].lastName
           });
         } else {
           return res.status(401).send({
