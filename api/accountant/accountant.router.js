@@ -91,9 +91,9 @@ router.post("/accountant-login", (req, res) => {
             token,
           });
         } else {
-          return res.send({
+          return res.status(401).send({
             message: "ëmail or password is incorrect",
-          });
+          })
         }
       }
     }
