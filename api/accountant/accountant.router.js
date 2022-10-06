@@ -90,7 +90,8 @@ router.post("/accountant-login", (req, res) => {
             message: "Log in successful!",
             token,
             firstName: result[0].firstName,
-            lastName: result[0].lastName
+            lastName: result[0].lastName,
+            email: result[0].email
           });
         } else {
           return res.status(401).send({
