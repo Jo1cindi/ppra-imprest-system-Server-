@@ -47,7 +47,7 @@ router.post("/send-request", (req, res) => {
 });
 
 //Get Request
-router.get("/view-requests", (req, res) => {
+router.post("/view-requests", (req, res) => {
   const email = req.body.email;
 
   dbConnection.query(
