@@ -8,6 +8,7 @@ router.post("/employee-signup", (req, res) => {
   const firstName = req.body.firstName;
   const lastName = req.body.lastName;
   const email = req.body.email;
+  const department = req.body.department
   const phoneNumber = req.body.phoneNumber;
   const password = req.body.password;
 
@@ -22,8 +23,8 @@ router.post("/employee-signup", (req, res) => {
       } else {
         bcrypt.hash(password, 10).then((encryptedPassword) => {
           dbConnection.query(
-            `insert into employees(firstName, lastName, email, phoneNumber, password) values(?,?,?,?,?)`,
-            [firstName, lastName, email, phoneNumber, encryptedPassword],
+            `insert into employees(firstName, lastName, email, department, phoneNumber, password) values(?,?,?,?,?,?)`,
+            [firstName, lastName, email, department, phoneNumber, encryptedPassword],
             (err, result) => {
               if (err) {
                 console.log(err);
