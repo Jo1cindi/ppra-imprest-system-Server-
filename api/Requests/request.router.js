@@ -67,7 +67,7 @@ router.post("/view-requests", (req, res) => {
         });
       } else if (result.length > 0) {
         dbConnection.query(
-          "select reason, amount_requested, request_time from requests where employee_id = ?",
+          "select reason, amount_requested, request_date, request_time from requests where employee_id = ?",
           [result[0].employee_id],
           (err, result) => {
             if (err) {
