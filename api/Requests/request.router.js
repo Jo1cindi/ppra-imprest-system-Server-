@@ -9,6 +9,7 @@ router.post("/send-request", (req, res) => {
   const date = req.body.date;
   const amount = req.body.amount;
   const reason = req.body.reasonForRequest;
+  const time  = req.body.time
 
   dbConnection.query(
     `select * from employees where email = ?`,
@@ -25,8 +26,8 @@ router.post("/send-request", (req, res) => {
         });
       } else if (result.length > 0) {
         dbConnection.query(
-          `insert into requests(request_date, amount_requested, reason, employee_id) values(?,?,?,?)`,
-          [date, amount, reason, result[0].employee_id],
+          `insert into requests(request_date, amount_requested, reason, employee_id, request_time) values(?,?,?,?,?)`,
+          [date, amount, reason, result[0].employee_id, time],
           (err, results) => {
             if (err) {
               console.log(err);
