@@ -29,6 +29,9 @@ app.use("/api",fmRouter)
 const requestRouter = require("./api/Requests/request.router")
 app.use("/api", requestRouter)
 
+const receivedRequestsRouter  = require("./api/Requests/SentRequests.router")
+app.use("/api", receivedRequestsRouter)
+
 app.listen(process.env.PORT || 3006, ()=>{
     console.log(`Server is perfectly running on ${process.env.PORT}`)
 })
