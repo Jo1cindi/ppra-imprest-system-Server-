@@ -5,12 +5,7 @@ const app = express();
 const cors = require("cors")
 
 app.use(express.json({extended: false}))
-// app.use(cors({
-//   origin: "*",
-//   methods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH'],
-//   Headers: 'Content-Type',
-//   credentials: true
-// }))
+
 app.use((req,res,next)=>{
     const allowedOrigins  = ['https://ppraimprest.netlify.app', 'http://localhost:3000'];
     const origin = req.headers.origin
@@ -22,6 +17,8 @@ app.use((req,res,next)=>{
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
     next()
 })
+
+
 
 
 
