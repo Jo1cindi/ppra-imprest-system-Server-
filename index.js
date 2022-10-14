@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const bodyParser  = require("body-parser");
 const app = express();
-
+const cors = require("cors")
 
 app.use(express.json({extended: false}))
 app.use((req,res,next)=>{
@@ -12,6 +12,9 @@ app.use((req,res,next)=>{
     res.setHeader('Access-Control-Allow-Credentials', true);
     next();
 })
+app.use(cors({
+  origin: "*"
+}))
 
 
 
