@@ -3,7 +3,7 @@ const router = require("express").Router();
 
 router.get("/received-requests", (req, res) => {
   dbConnection.query(
-    `select request_id, request_date  from requests where status = ''`,
+    `select request_id, request_date, employee_id  from requests where status = ''`,
     (error, results) => {
       if (error) {
         console.log(error);
@@ -22,7 +22,7 @@ router.post("/get-request-details", (req, res) => {
   const request_id = req.body.requestId;
   const employee_id = req.body.employeeId;
   dbConnection.query(
-    `select amount_requested, reason, employee_id from requests where request_id = ?`,
+    `select amount_requested, reason from requests where request_id = ?`,
     [request_id],
     (error, results) => {
       if (error) {
