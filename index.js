@@ -2,17 +2,26 @@ require("dotenv").config();
 const express = require("express");
 const bodyParser  = require("body-parser");
 const app = express();
-
+const cors = require("cors")
 
 app.use(express.json({extended: false}))
+// app.use(cors({
+//   origin: "*",
+//   methods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH'],
+//   Headers: 'Content-Type',
+//   credentials: true
+// }))
 app.use((req,res,next)=>{
-    res.setHeader('Access-Control-Allow-Origin', 'https://ppraimprest.netlify.app/');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Origin, X-Auth-Token');
-    res.setHeader('Access-Control-Allow-Credentials', true);
-    next();
+    const allowedOrigins  = ['https://ppraimprest.netlify.app', 'http://localhost:3000'];
+    const origin = req.headers.origin
+    if(allowedOrigins.includes(origin)){
+        res.setHeader('Access-Control-Allow-Origin', origin)
+    }
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, UPDATE');
+    res.setHeader('Access-Control-Allow-Credentials', true)
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+    next()
 })
-
 
 
 
@@ -32,7 +41,8 @@ app.use("/api",fmRouter)
 const requestRouter = require("./api/Requests/request.router")
 app.use("/api", requestRouter)
 
-const receivedRequestsRouter  = require("./api/Requests/SentRequests.router")
+const receivedRequestsRouter  = require("./api/Requests/SentRequests.router");
+const { all } = require("./api/employees/employee.router");
 app.use("/api", receivedRequestsRouter)
 
 app.listen(process.env.PORT || 3006, ()=>{
