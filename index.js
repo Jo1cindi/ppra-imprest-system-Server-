@@ -10,6 +10,7 @@ app.use(cors({
     credentials: true,
     methods: ['GET','POST','DELETE','UPDATE','PUT']
 }))
+app.options('*', cors())
 
 
 
