@@ -13,7 +13,10 @@ app.use((req,res,next)=>{
     next();
 })
 app.use(cors({
-  origin: "*"
+  origin: "*",
+  methods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH'],
+  Headers: 'Content-Type',
+  credentials: true
 }))
 
 
