@@ -58,19 +58,6 @@ router.post("/get-request-details", (req, res) => {
   );
 });
 
-router.post("/approve-request", (req, res) => {
-  const approved = req.body.approved;
-  dbConnection.query(
-    `select request_id from requests where status = ''`,
-    (error, results) => {
-      if (error) {
-        console.log(error);
-        return res.status(500).send({
-          message: "Database Error",
-        });
-      }
-    }
-  );
-});
+
 
 module.exports = router;
