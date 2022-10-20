@@ -39,6 +39,8 @@ app.use("/api", receivedRequestsRouter)
 const approveRequestRouter = require("./api/Requests/ApproveRejectRequests.router")
 app.use("/api", approveRequestRouter)
 
+const requestNotifications  = require("./api/Requests/RequestsNotification.router")
+app.use("/api", requestNotifications)
 
 
 app.listen(process.env.PORT || 3006, ()=>{
