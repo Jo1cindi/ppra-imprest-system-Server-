@@ -60,9 +60,10 @@ router.post("/view-notification", (req, res) => {
 
 router.post("/viewed-notifications", (req, res) => {
   const email = req.body.email;
+  
 
   dbConnection.query(
-    `select employee_id from employees where emial = ?`,
+    `select employee_id from employees where email = ?`,
     [email],
     (error, results) => {
       if (error) {
@@ -73,7 +74,7 @@ router.post("/viewed-notifications", (req, res) => {
       }
       if (results) {
         dbConnection.query(
-          `select amount_requested, status from requests where employee_id = ?`,
+          `select amount_requested, status from requests where employee_id = ? and notificationStatus = "viewed"`,
           [results[0].employee_id],
           (error, result) => {
             if(error){
