@@ -42,6 +42,9 @@ app.use("/api", approveRequestRouter)
 const requestNotifications  = require("./api/Requests/RequestsNotification.router")
 app.use("/api", requestNotifications)
 
+const requestsHistory = require("./api/Requests/RequestsHistory.router")
+app.use("/api", requestsHistory)
+
 
 app.listen(process.env.PORT || 3006, ()=>{
     console.log(`Server is perfectly running on ${process.env.PORT}`)
