@@ -12,7 +12,7 @@ router.get("/received-requests", (req, res) => {
         });
       }
       if (results.length > 0) {
-        res.status(200).send(results);
+        return res.status(200).send(results);
       }
     }
   );

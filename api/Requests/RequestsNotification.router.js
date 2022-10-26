@@ -60,7 +60,6 @@ router.post("/view-notification", (req, res) => {
 
 router.post("/viewed-notifications", (req, res) => {
   const email = req.body.email;
-  
 
   dbConnection.query(
     `select employee_id from employees where email = ?`,
@@ -77,17 +76,35 @@ router.post("/viewed-notifications", (req, res) => {
           `select amount_requested, status from requests where employee_id = ? and notificationStatus = "viewed"`,
           [results[0].employee_id],
           (error, result) => {
-            if(error){
-                console.log(error)
-                return res.status(500).send({
-                    message: "Internal Database Error"
-                })
+            if (error) {
+              console.log(error);
+              return res.status(500).send({
+                message: "Internal Database Error",
+              });
             }
-            if(result){
-                return res.status(200).send(result)
+            if (result) {
+              return res.status(200).send(result);
             }
           }
         );
+      }
+    }
+  );
+});
+
+//Accountant Notifications
+router.get("/accountant-notifications", (req, res) => {
+  dbConnection.query(
+    `select employee_id, request_id , amount_requested, status from requests where status = "approved"`,
+    (error, results) => {
+      if(error){
+        console.log(error)
+        return res.status(200).send({
+          message: "Internal database error"
+        })
+      }
+      if(results){
+        return res.status(200).send(results)
       }
     }
   );
