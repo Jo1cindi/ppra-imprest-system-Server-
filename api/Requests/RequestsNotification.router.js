@@ -95,7 +95,7 @@ router.post("/viewed-notifications", (req, res) => {
 //Accountant Notifications
 router.get("/accountant-notifications", (req, res) => {
   dbConnection.query(
-    `select employee_id, request_id , amount_requested, status from requests where status = "approved"`,
+    `select employee_id, request_id , amount_requested, request_date, status from requests where status = "approved"`,
     (error, results) => {
       if (error) {
         console.log(error);
@@ -115,7 +115,7 @@ router.post("/approved-request-details", (req, res) => {
   const employeeId = req.body.employeeId;
 
   dbConnection.query(
-    `select firstName, lastName, department from employees where employee_id = ?`,
+    `select firstName, lastName, email, department from employees where employee_id = ?`,
     employeeId,
     (error, result) => {
       if(error){
