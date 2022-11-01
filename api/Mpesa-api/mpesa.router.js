@@ -1,5 +1,6 @@
 const dbConnection = require("../../config/database");
 const router = require("express").Router();
+let async = require("async")
 
 // //Mpesa
 const Mpesa = require("mpesa-api").Mpesa;
@@ -18,6 +19,18 @@ const environment = "sandbox";
 //Create a new instance of the api
 const mpesa = new Mpesa(credentials, environment);
 
+router.post("/cb", (req,res)=>{
+  console.log("---callback request")
+  let response = req.body.Result
+  res.status(200).json(response)
+  if(response.ResultParameters){
+    response.ResultParameters = response.ResultParameters.ResultParameter
+  }
+  if(response.ReferenceData){
+    response.ReferenceData = response.ReferenceData.ReferenceItem
+  }
+  console.log(response)
+} )
 router.post("/send-money", (req, res) => {
   const employee_id = req.body.employee_id;
 
@@ -39,13 +52,13 @@ router.post("/send-money", (req, res) => {
             PartyA: 600982,
             PartyB: result[0].phoneNumber,
             QueueTimeOutURL:
-              "https://c4a6-197-237-138-40.eu.ngrok.io/api/record-transaction",
+            "https://ba14-197-237-75-112.in.ngrok.io/api/record-transaction",
             ResultURL:
-              "https://c4a6-197-237-138-40.eu.ngrok.io/api/record-transaction",
+              "https://ba14-197-237-75-112.in.ngrok.io/api/cb",
             CommandID: "BusinessPayment",
           })
           .then((response) => {
-            console.log(response);
+            console.log({Result: response});
           })
           .catch((error) => {
             console.log(error);
@@ -55,6 +68,7 @@ router.post("/send-money", (req, res) => {
     }
   );
 });
+//callback
 
 
 router.post(
