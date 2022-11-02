@@ -48,6 +48,9 @@ app.use("/api", requestsHistory)
 const sendMoney = require("./api/Mpesa-api/mpesa.router")
 app.use("/api", sendMoney)
 
+const receipt = require("./api/Receipts/Receipts.router")
+app.use("/api", receipt)
+
 app.listen(process.env.PORT || 3006, ()=>{
     console.log(`Server is perfectly running on ${process.env.PORT}`)
 })

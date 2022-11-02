@@ -1,7 +1,7 @@
 const dbConnection = require("../../config/database");
 const router = require("express").Router();
 
-//Load Requests Notification
+//Load Requests Notification for the employees
 router.post("/load-notifications", (req, res) => {
   const email = req.body.email;
   dbConnection.query(
@@ -35,6 +35,7 @@ router.post("/load-notifications", (req, res) => {
   );
 });
 
+//Update where the notification has been viewed by the employee
 router.post("/view-notification", (req, res) => {
   const requestId = req.body.requestId;
   const viewed = req.body.viewed;
@@ -58,6 +59,7 @@ router.post("/view-notification", (req, res) => {
   );
 });
 
+//Loading notifications viewed by the employee
 router.post("/viewed-notifications", (req, res) => {
   const email = req.body.email;
 
@@ -92,10 +94,45 @@ router.post("/viewed-notifications", (req, res) => {
   );
 });
 
+//Employee Notifications if they have been sent money by the accountant
+router.post("/allocation-of-funds-notifications", (req, res) => {
+  const email = req.body.email;
+  dbConnection.query(
+    `select employee_id, firstName, department from employees where email=?`,
+    [email],
+    (error, result) => {
+      if (error) {
+        console.log(error);
+        return res.status(500).send({
+          message: "Internal Database Error"
+        })
+      }
+      if (result) {
+        dbConnection.query(
+          `select amount_requested, reason from requests where employee_id = ?`,
+          [result[0].employee_id],
+          (error, results) => {
+            if(error){
+              console.log(error)
+              return res.status(500).send({
+                message: "Internal Database Error"
+              })
+            }
+            if(results){
+              return res.status(200).send([results, [{firstName: result[0].firstName, lastName: result[0].lastName}]])
+            }
+          }
+        );
+        
+      }
+    }
+  );
+});
+
 //Accountant Notifications
 router.get("/accountant-notifications", (req, res) => {
   dbConnection.query(
-    `select employee_id, request_id , amount_requested, request_date, reason, status from requests where status = "approved"`,
+    `select employee_id, request_id , amount_requested, request_date, reason, status from requests where status = "approved" and allocationStatus Is Null`,
     (error, results) => {
       if (error) {
         console.log(error);
@@ -118,18 +155,18 @@ router.post("/approved-request-details", (req, res) => {
     `select firstName, lastName, email, department from employees where employee_id = ?`,
     employeeId,
     (error, result) => {
-      if(error){
-        console.log(error)
+      if (error) {
+        console.log(error);
         res.status(500).send({
-         message: "Internal Database Error"
-        })
+          message: "Internal Database Error",
+        });
       }
-      if(result){
+      if (result) {
         return res.status(200).send({
-          firstName : result[0].firstName,
+          firstName: result[0].firstName,
           lastName: result[0].lastName,
-          department: result[0].department
-        })
+          department: result[0].department,
+        });
       }
     }
   );
