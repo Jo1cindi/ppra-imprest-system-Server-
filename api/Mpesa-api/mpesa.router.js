@@ -1,6 +1,6 @@
 const dbConnection = require("../../config/database");
 const router = require("express").Router();
-let async = require("async")
+
 
 // //Mpesa
 const Mpesa = require("mpesa-api").Mpesa;
@@ -57,7 +57,7 @@ router.post("/send-money", (req, res) => {
             Initiator: "testapi",
             Amount: "1",
             SecurityCredential: process.env.SECURITY_CREDENTIALS,
-            PartyA: "174339",
+            PartyA: "6009821",
             PartyB: result[0].phoneNumber,
             QueueTimeOutURL:
             "https://500f-197-237-75-112.eu.ngrok.io/api/timeout",
