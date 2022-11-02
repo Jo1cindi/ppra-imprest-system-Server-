@@ -19,6 +19,7 @@ const environment = "sandbox";
 //Create a new instance of the api
 const mpesa = new Mpesa(credentials, environment);
 
+//callback url
 router.post("/cb", (req,res)=>{
   console.log("---callback request")
   let response = req.body.Result
@@ -30,7 +31,13 @@ router.post("/cb", (req,res)=>{
     response.ReferenceData = response.ReferenceData.ReferenceItem
   }
   console.log(response)
-} )
+})
+
+//timeout url
+router.post("timeout", (req,res)=>{
+  console.log("Request timeout")
+  console.dir(req.body)
+})
 router.post("/send-money", (req, res) => {
   const employee_id = req.body.employee_id;
 
@@ -48,13 +55,14 @@ router.post("/send-money", (req, res) => {
         mpesa
           .b2c({
             Initiator: "testapi",
-            Amount: 10,
-            PartyA: 600982,
+            Amount: "1",
+            SecurityCredential: process.env.SECURITY_CREDENTIALS,
+            PartyA: "174339",
             PartyB: result[0].phoneNumber,
             QueueTimeOutURL:
-            "https://ba14-197-237-75-112.in.ngrok.io/api/record-transaction",
+            "https://500f-197-237-75-112.eu.ngrok.io/api/timeout",
             ResultURL:
-              "https://ba14-197-237-75-112.in.ngrok.io/api/cb",
+              "https://500f-197-237-75-112.eu.ngrok.io/api/cb",
             CommandID: "BusinessPayment",
           })
           .then((response) => {
@@ -68,7 +76,7 @@ router.post("/send-money", (req, res) => {
     }
   );
 });
-//callback
+
 
 
 router.post(
