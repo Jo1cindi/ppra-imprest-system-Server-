@@ -91,7 +91,8 @@ router.post("/accountant-login", (req, res) => {
             token,
             firstName: result[0].firstName,
             lastName: result[0].lastName,
-            email: result[0].email
+            email: result[0].email,
+            accountantId: result[0].accountant_id
           });
         } else {
           return res.status(401).send({
