@@ -7,7 +7,7 @@ const cors = require("cors")
 app.use(express.json({extended: false}))
 
 app.use(cors({
-    origin: ["http://localhost:3000","https://ppraimprest.netlify.app" ],
+    origin:"*" ,
     credentials: true,
     methods: "POST, GET, PUT, DELETE"
 }))
