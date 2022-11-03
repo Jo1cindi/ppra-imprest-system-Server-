@@ -135,9 +135,32 @@ router.post("/allocation-of-funds-notifications", (req, res) => {
     }
   );
 });
+router.post("/view-allocation-notification", (req, res) => {
+  const requestId = req.body.requestId;
+  const viewed = req.body.viewed;
+
+  dbConnection.query(
+    `update requests set allocation_notification_status = ? where request_id = ?`,
+    [viewed, requestId],
+    (error, result) => {
+      if (error) {
+        console.log(error);
+        return res.status(500).send({
+          message: "Internal Database Error",
+        });
+      }
+      if (result) {
+        return res.status(200).send({
+          message: "Notification Status successfully updated",
+        });
+      }
+    }
+  );
+});
+
+
 router.post("/viewed-allocation-notifications", (req, res) => {
   const email = req.body.email;
-  const viewed = req.body.viewed;
 
   dbConnection.query(
     `select employee_id from employees where email = ?`,
@@ -151,19 +174,17 @@ router.post("/viewed-allocation-notifications", (req, res) => {
       }
       if (results) {
         dbConnection.query(
-          `update requests set allocation_notification_status = ? where employee_id = ?`,
-          [viewed, results[0].employee_id],
+          `select amount_requested, request_date from requests where employee_id = ? and allocation_notification_status = "viewed"`,
+          [results[0].employee_id],
           (error, result) => {
-            if(error){
-              console.log(error)
+            if (error) {
+              console.log(error);
               return res.status(500).send({
-                message: "Internal Database Error"
-              })
+                message: "Internal Database Error",
+              });
             }
-            if(result){
-              return res.status(200).send({
-                status: "viewed"
-              })
+            if (result) {
+              return res.status(200).send(result);
             }
           }
         );
