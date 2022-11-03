@@ -104,26 +104,33 @@ router.post("/allocation-of-funds-notifications", (req, res) => {
       if (error) {
         console.log(error);
         return res.status(500).send({
-          message: "Internal Database Error"
-        })
+          message: "Internal Database Error",
+        });
       }
       if (result) {
         dbConnection.query(
           `select amount_requested, reason from requests where employee_id = ?`,
           [result[0].employee_id],
           (error, results) => {
-            if(error){
-              console.log(error)
+            if (error) {
+              console.log(error);
               return res.status(500).send({
-                message: "Internal Database Error"
-              })
+                message: "Internal Database Error",
+              });
             }
-            if(results){
-              return res.status(200).send([results, [{firstName: result[0].firstName, lastName: result[0].lastName}]])
+            if (results) {
+              return res.status(200).send([
+                results,
+                [
+                  {
+                    firstName: result[0].firstName,
+                    lastName: result[0].lastName,
+                  },
+                ],
+              ]);
             }
           }
         );
-        
       }
     }
   );
@@ -142,6 +149,43 @@ router.get("/accountant-notifications", (req, res) => {
       }
       if (results) {
         return res.status(200).send(results);
+      }
+    }
+  );
+});
+
+router.post("/viewed-allocation-notifications", (req, res) => {
+  const email = req.body.email;
+  const viewed = req.body.viewed;
+
+  dbConnection.query(
+    `select employee_id from employees where email = ?`,
+    [email],
+    (error, results) => {
+      if (error) {
+        console.log(error);
+        return res.status(500).send({
+          message: "Internal Database Error",
+        });
+      }
+      if (results) {
+        dbConnection.query(
+          `update requests set allocation_notification_status = ? where employee_id = ?`,
+          [viewed, results[0].employee_id],
+          (error, result) => {
+            if(error){
+              console.log(error)
+              return res.status(500).send({
+                message: "Internal Database Error"
+              })
+            }
+            if(result){
+              return res.status(200).send({
+                status: "viewed"
+              })
+            }
+          }
+        );
       }
     }
   );
