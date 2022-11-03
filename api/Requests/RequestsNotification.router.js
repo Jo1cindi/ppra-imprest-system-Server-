@@ -132,7 +132,7 @@ router.post("/allocation-of-funds-notifications", (req, res) => {
 //Accountant Notifications
 router.get("/accountant-notifications", (req, res) => {
   dbConnection.query(
-    `select employee_id, request_id , amount_requested, request_date, reason, status from requests where status = "approved" and allocationStatus Is Null`,
+    `select employee_id, request_id, amount_requested, request_date, reason, status from requests where status = "approved" and allocation_status Is Null`,
     (error, results) => {
       if (error) {
         console.log(error);
