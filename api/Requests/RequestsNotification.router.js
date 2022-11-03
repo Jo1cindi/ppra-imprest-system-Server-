@@ -135,25 +135,6 @@ router.post("/allocation-of-funds-notifications", (req, res) => {
     }
   );
 });
-
-//Accountant Notifications
-router.get("/accountant-notifications", (req, res) => {
-  dbConnection.query(
-    `select employee_id, request_id, amount_requested, request_date, reason, status from requests where status = "approved" and allocation_status Is Null`,
-    (error, results) => {
-      if (error) {
-        console.log(error);
-        return res.status(200).send({
-          message: "Internal database error",
-        });
-      }
-      if (results) {
-        return res.status(200).send(results);
-      }
-    }
-  );
-});
-
 router.post("/viewed-allocation-notifications", (req, res) => {
   const email = req.body.email;
   const viewed = req.body.viewed;
@@ -190,6 +171,26 @@ router.post("/viewed-allocation-notifications", (req, res) => {
     }
   );
 });
+
+//Accountant Notifications
+router.get("/accountant-notifications", (req, res) => {
+  dbConnection.query(
+    `select employee_id, request_id, amount_requested, request_date, reason, status from requests where status = "approved" and allocation_status Is Null`,
+    (error, results) => {
+      if (error) {
+        console.log(error);
+        return res.status(200).send({
+          message: "Internal database error",
+        });
+      }
+      if (results) {
+        return res.status(200).send(results);
+      }
+    }
+  );
+});
+
+
 
 //Request details
 router.post("/approved-request-details", (req, res) => {
