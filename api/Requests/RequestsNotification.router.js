@@ -98,7 +98,7 @@ router.post("/viewed-notifications", (req, res) => {
 router.post("/allocation-of-funds-notifications", (req, res) => {
   const email = req.body.email;
   dbConnection.query(
-    `select employee_id, firstName, department from employees where email=?`,
+    `select employee_id from employees where email=?`,
     [email],
     (error, result) => {
       if (error) {
