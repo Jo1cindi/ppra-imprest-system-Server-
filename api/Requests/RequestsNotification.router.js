@@ -119,15 +119,7 @@ router.post("/allocation-of-funds-notifications", (req, res) => {
               });
             }
             if (results) {
-              return res.status(200).send([
-                results,
-                [
-                  {
-                    firstName: result[0].firstName,
-                    lastName: result[0].lastName,
-                  },
-                ],
-              ]);
+              return res.status(200).send(results);
             }
           }
         );
@@ -157,7 +149,6 @@ router.post("/view-allocation-notification", (req, res) => {
     }
   );
 });
-
 
 router.post("/viewed-allocation-notifications", (req, res) => {
   const email = req.body.email;
@@ -210,8 +201,6 @@ router.get("/accountant-notifications", (req, res) => {
     }
   );
 });
-
-
 
 //Request details
 router.post("/approved-request-details", (req, res) => {
