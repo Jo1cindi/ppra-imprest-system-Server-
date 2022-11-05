@@ -6,7 +6,7 @@ router.post("/load-receipts", (req, res) => {
   const email = req.body.email;
 
   dbConnection.query(
-    `select employee_id, firstName, department from employees where email = ?`,
+    `select employee_id, firstName, lastName, department from employees where email = ?`,
     [email],
     (error, result) => {
       if (error) {
@@ -17,7 +17,7 @@ router.post("/load-receipts", (req, res) => {
       }
       if (result) {
         dbConnection.query(
-          `select request_id, amount_requested, reason, request_date from requests where employee_id = ? and allocation_status = "allocated" and status = "approved"`,
+          `select request_id, amount_requested, reason, request_date from requests where employee_id = ? and allocation_status = "allocated"`,
           [result[0].employee_id],
           (error, results) => {
             if (error) {
@@ -27,14 +27,7 @@ router.post("/load-receipts", (req, res) => {
               });
             }
             if(results){
-                return res.status(200).send({
-                    firstName: result[0].firstName,
-                    lastName: result[0].lastName,
-                    department: result[0].department,
-                    requestId: results[0].request_id,
-                    amount: results[0].amount_requested,
-                    reason: results[0].reason
-                  }); 
+                return res.status(200).send([result, results]); 
             }
           }
         );
@@ -46,6 +39,7 @@ router.post("/load-receipts", (req, res) => {
 router.post("/get-receipt-details", (req, res) => {
   const employeeId = req.body.employeeId;
   const requestId = req.body.requestId;
+
 
   dbConnection.query(
     `select accountant_id, date from fund_allocations where employee_id = ? and request_id = ?`,

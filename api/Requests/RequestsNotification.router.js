@@ -109,7 +109,7 @@ router.post("/allocation-of-funds-notifications", (req, res) => {
       }
       if (result) {
         dbConnection.query(
-          `select amount_requested, request_date, request_id from requests where employee_id = ? and allocation_notification_status Is Null `,
+          `select amount_requested, request_date, request_id from requests where employee_id = ? and allocation_notification_status Is Null and status = "approved"`,
           [result[0].employee_id],
           (error, results) => {
             if (error) {
