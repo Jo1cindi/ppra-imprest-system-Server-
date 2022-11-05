@@ -17,7 +17,7 @@ router.post("/load-receipts", (req, res) => {
       }
       if (result) {
         dbConnection.query(
-          `select request_id, amount_requested, reason from requests where employee_id = ? and allocation_status = "allocated" and status = "approved"`,
+          `select request_id, amount_requested, reason, request_date from requests where employee_id = ? and allocation_status = "allocated" and status = "approved"`,
           [result[0].employee_id],
           (error, results) => {
             if (error) {
