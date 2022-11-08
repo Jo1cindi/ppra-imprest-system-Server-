@@ -51,6 +51,9 @@ app.use("/api", sendMoney)
 const receipt = require("./api/Receipts/Receipts.router")
 app.use("/api", receipt)
 
+const pettyCash = require("./api/petty cash book/pettycash.router")
+app.use("/api", pettyCash)
+
 app.listen(process.env.PORT || 3006, ()=>{
     console.log(`Server is perfectly running on ${process.env.PORT}`)
 })
