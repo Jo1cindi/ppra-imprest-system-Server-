@@ -1,6 +1,7 @@
 const dbConnection = require("../../config/database");
 const router = require("express").Router();
 
+//view total spent in a year and month
 router.post("/total-spent", (req, res) => {
   const month = req.body.month;
   const year = req.body.year;
@@ -35,6 +36,7 @@ router.post("/total-spent", (req, res) => {
   );
 });
 
+//petty cash records
 router.post("/petty-cash-record", (req, res) => {
   const month = req.body.month;
   const year = req.body.year;
@@ -52,6 +54,59 @@ router.post("/petty-cash-record", (req, res) => {
       if (results) {
         return res.status(200).send(results);
       }
+    }
+  );
+});
+
+//Setting initial balance
+router.post("/set-initial-amount", (req, res) => {
+  const initialAmount = req.body.initialAmount;
+  const balance = req.body.balance;
+  const month = req.body.month;
+  const year = req.body.year;
+  const accountantId = req.body.accountantId;
+
+  dbConnection.query(
+    `insert into pettycashfund(initialamount, balance, month, year, accountant_id) values (?,?,?,?,?)`,
+    [initialAmount, balance, month, year, accountantId],
+    (error, result) => {
+      if (error) {
+        console.log(error);
+        return res.status(500).send({
+          message: "Internal database error",
+        });
+      }
+
+      if (result) {
+        return res.status(200).send({
+          message: "Data updated successfully",
+        });
+      }
+    }
+  );
+});
+
+//Loading the petty cash monthly balance
+router.post("/load-balance", (req, res) => {
+  const month = req.body.month;
+  const year = req.body.year;
+
+  dbConnection.query(
+    `select balance from pettycashfund where month = ? and year = ?`,
+    [month, year],
+    (error, result) => {
+        if (error) {
+            console.log(error);
+            return res.status(500).send({
+              message: "Internal database error",
+            });
+          }
+    
+          if (result) {
+            return res.status(200).send({
+              balance: result[0].balance
+            });
+          }
     }
   );
 });
