@@ -1,63 +1,6 @@
 const dbConnection = require("../../config/database");
 const router = require("express").Router();
 
-//view total spent in a year and month
-router.post("/total-spent", (req, res) => {
-  const month = req.body.month;
-  const year = req.body.year;
-  dbConnection.query(
-    `select sum(amount) from fund_allocations where month = ?`,
-    [month],
-    (error, results) => {
-      if (error) {
-        console.log(error);
-        return res.status(500).send({
-          message: "Internal database error",
-        });
-      }
-      if (results) {
-        dbConnection.query(
-          `select sum(amount) from fund_allocations where year = ?`,
-          [year],
-          (error, result) => {
-            if (error) {
-              console.log(error);
-              return res.status(500).send({
-                message: "Internal database error",
-              });
-            }
-            if (result) {
-              return res.status(200).send([results, result]);
-            }
-          }
-        );
-      }
-    }
-  );
-});
-
-//petty cash records
-router.post("/petty-cash-record", (req, res) => {
-  const month = req.body.month;
-  const year = req.body.year;
-
-  dbConnection.query(
-    `select date, reason, amount from fund_allocations where month = ? and year =?`,
-    [month, year],
-    (error, results) => {
-      if (error) {
-        console.log(error);
-        return res.status(500).send({
-          message: "Internal database error",
-        });
-      }
-      if (results) {
-        return res.status(200).send(results);
-      }
-    }
-  );
-});
-
 //Setting initial balance
 router.post("/set-initial-amount", (req, res) => {
   const initialAmount = req.body.initialAmount;
@@ -97,32 +40,87 @@ router.post("/set-initial-amount", (req, res) => {
               });
             }
           }
-        )
+        );
       }
     }
   );
 });
 
-//Loading the petty cash monthly balance
-router.post("/load-balance", (req, res) => {
+//Loading  petty cash records
+router.post("/petty-cash-records", (req, res) => {
   const month = req.body.month;
   const year = req.body.year;
 
   dbConnection.query(
-    `select balance from pettycashfund where month = ? and year = ?`,
+    `select initialamount from pettycashfund where month = ? and year = ?`,
     [month, year],
-    (error, result) => {
+    (error, initialAmount) => {
       if (error) {
         console.log(error);
         return res.status(500).send({
-          message: "Internal database error",
+          message: "Internal  Database Error",
         });
       }
-
-      if (result) {
-        return res.status(200).send({
-          balance: result[0].balance,
-        });
+      if (initialAmount) {
+        dbConnection.query(
+          `select ( select sum(amount) from fund_allocations where month = ? and year = ? ) as totalInAMonth`,
+          [month, year],
+          (error, totalAmountAllocated) => {
+            if (error) {
+              console.log(error);
+              return res.status(500).send({
+                message: "Internal  Database Error",
+              });
+            }
+            if (totalAmountAllocated) {
+              dbConnection.query(`select(select sum(amount) from fund_allocations where year = ${year}) as totalInAYear`, (error, totalInAYear)=>{
+                if(error){
+                  console.log(error)
+                  return res.status(500).send({
+                    message: "Internal Database Error"
+                  })
+                }
+                if(totalAmountAllocated){
+                  dbConnection.query(
+                    `select(select initialamount from pettycashfund where month = ${month} and year = ${year}) - (select sum(amount) from fund_allocations where month = ${month} and year = ${year}) as balance`,
+                    (error, balance) => {
+                      if (error) {
+                        console.log(error);
+                        return res.status(500).send({
+                          message: "Internal  Database Error",
+                        });
+                      }
+                      if (balance) {
+                        dbConnection.query(
+                          `update pettycashfund set balance = ? where month = ${month} and year = ${year}`,
+                          [balance[0].balance],
+                          (error, result) => {
+                            if (error) {
+                              console.log(error);
+                              return res.status(500).send({
+                                message: "Internal  Database Error",
+                              });
+                            }
+                            if(result){
+                              return res.status(200).send([
+                                {
+                                  initialAmount: initialAmount[0].initialamount,
+                                  totalAmountAllocated: totalAmountAllocated[0].totalInAMonth,
+                                  totalInAYear: totalInAYear[0].totalInAYear,
+                                  balance:balance[0].balance
+                                }
+                              ])
+                            }
+                          }
+                        );
+                      }
+                    }
+                  );
+                }
+               })
+            }
+          }
+        );
       }
     }
   );

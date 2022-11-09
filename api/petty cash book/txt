@@ -1,0 +1,46 @@
+dbConnection.query(`select sum(amount) from fund_allocations where year = ${year}`, (error, totalInAYear)=>{
+              if(error){
+                console.log(error)
+                return res.status(500).send({
+                  message: "Internal Database Error"
+                })
+              }
+              if(totalAmountAllocated){
+                
+              }
+             })
+
+
+             dbConnection.query(
+                `select(select initialamount from pettycashfund where month = ${month} and year = ${year}) - (select sum(amount) from fund_allocations where month = ${month} and year = ${year}) as balance`,
+                (error, balance) => {
+                  if (error) {
+                    console.log(error);
+                    return res.status(500).send({
+                      message: "Internal  Database Error",
+                    });
+                  }
+                  if (balance) {
+                    dbConnection.query(
+                      `insert into pettycashfund(balance) values = ? where month = ${month} and year = ${year}`,
+                      [balance[0].balance],
+                      (error, result) => {
+                        if (error) {
+                          console.log(error);
+                          return res.status(500).send({
+                            message: "Internal  Database Error",
+                          });
+                        }
+                        if(result){
+                          return res.status(200).send([
+                            {
+                              initialAmount: initialAmount[0].initialAmount,
+                              totalAmountAllocated: totalAmountAllocated[0].totalAmountAllocated,
+                            }
+                          ])
+                        }
+                      }
+                    );
+                  }
+                }
+              );
