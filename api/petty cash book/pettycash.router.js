@@ -61,14 +61,13 @@ router.post("/petty-cash-record", (req, res) => {
 //Setting initial balance
 router.post("/set-initial-amount", (req, res) => {
   const initialAmount = req.body.initialAmount;
-  const balance = req.body.balance;
   const month = req.body.month;
   const year = req.body.year;
   const accountantId = req.body.accountantId;
 
   dbConnection.query(
-    `insert into pettycashfund(initialamount, balance, month, year, accountant_id) values (?,?,?,?,?)`,
-    [initialAmount, balance, month, year, accountantId],
+    `insert into pettycashfund(initialamount, month, year, accountant_id) values (?,?,?,?,?)`,
+    [initialAmount, month, year, accountantId],
     (error, result) => {
       if (error) {
         console.log(error);
