@@ -70,7 +70,7 @@ router.post("/employee-login", (req, res) => {
       }
       if (!result.length) {
         return res.status(401).send({
-          message: "ëmail or password is incorrect",
+          message: "email or password is incorrect",
         });
       } else if (result.length > 0) {
         const compare = bcrypt.compareSync(password, result[0].password);

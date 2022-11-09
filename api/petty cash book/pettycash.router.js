@@ -66,20 +66,36 @@ router.post("/set-initial-amount", (req, res) => {
   const accountantId = req.body.accountantId;
 
   dbConnection.query(
-    `insert into pettycashfund(initialamount, month, year, accountant_id) values (?,?,?,?,?)`,
-    [initialAmount, month, year, accountantId],
+    `select initialamount from pettycashfund where month = ? and year = ?`,
+    [month, year],
     (error, result) => {
       if (error) {
         console.log(error);
         return res.status(500).send({
-          message: "Internal database error",
+          message: "Internal Database Error",
         });
       }
-
-      if (result) {
-        return res.status(200).send({
-          message: "Data updated successfully",
+      if (result.length) {
+        return res.status(409).send({
+          message: "Intial Amount for this month already set",
         });
+      } else {
+        `insert into pettycashfund(initialamount, month, year, accountant_id) values (?,?,?,?)`,
+          [initialAmount, month, year, accountantId],
+          (error, result) => {
+            if (error) {
+              console.log(error);
+              return res.status(500).send({
+                message: "Internal database error",
+              });
+            }
+
+            if (result) {
+              return res.status(200).send({
+                message: "Data updated successfully",
+              });
+            }
+          };
       }
     }
   );
@@ -94,18 +110,18 @@ router.post("/load-balance", (req, res) => {
     `select balance from pettycashfund where month = ? and year = ?`,
     [month, year],
     (error, result) => {
-        if (error) {
-            console.log(error);
-            return res.status(500).send({
-              message: "Internal database error",
-            });
-          }
-    
-          if (result) {
-            return res.status(200).send({
-              balance: result[0].balance
-            });
-          }
+      if (error) {
+        console.log(error);
+        return res.status(500).send({
+          message: "Internal database error",
+        });
+      }
+
+      if (result) {
+        return res.status(200).send({
+          balance: result[0].balance,
+        });
+      }
     }
   );
 });
