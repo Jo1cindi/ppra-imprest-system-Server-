@@ -59,7 +59,7 @@ router.post("/petty-cash-record", (req, res) => {
 });
 
 //Setting initial balance
-router.post("/initial-amount", (req, res) => {
+router.post("/set-initial-amount", (req, res) => {
   const initialAmount = req.body.initialAmount;
   const month = req.body.month;
   const year = req.body.year;
@@ -75,12 +75,13 @@ router.post("/initial-amount", (req, res) => {
           message: "Internal Database Error",
         });
       }
-      if (result.length) {
+      if (result.length > 0) {
         return res.status(409).send({
           message: "Intial Amount for this month already set",
         });
       } else {
-        `insert into pettycashfund(initialamount, month, year, accountant_id) values (?,?,?,?)`,
+        dbConnection.query(
+          `insert into pettycashfund(initialamount, month, year, accountant_id) values (?,?,?,?)`,
           [initialAmount, month, year, accountantId],
           (error, result) => {
             if (error) {
@@ -95,7 +96,8 @@ router.post("/initial-amount", (req, res) => {
                 message: "Data updated successfully",
               });
             }
-          };
+          }
+        )
       }
     }
   );
