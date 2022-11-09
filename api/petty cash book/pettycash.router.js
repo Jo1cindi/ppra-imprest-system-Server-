@@ -59,7 +59,7 @@ router.post("/petty-cash-record", (req, res) => {
 });
 
 //Setting initial balance
-router.post("/set-initial-amount", (req, res) => {
+router.post("/initial-amount", (req, res) => {
   const initialAmount = req.body.initialAmount;
   const month = req.body.month;
   const year = req.body.year;
