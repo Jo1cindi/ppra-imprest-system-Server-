@@ -132,7 +132,7 @@ router.post("/petty-cash-records", (req, res) => {
 });
 
 //Loading Fund Allocations
-router.post("/fund-allocations", (req, res) => {
+router.post("/load-fund-allocations", (req, res) => {
   const month = req.body.month;
   const year = req.body.year;
 
