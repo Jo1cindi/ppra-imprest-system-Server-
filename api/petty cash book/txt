@@ -44,3 +44,5 @@ dbConnection.query(`select sum(amount) from fund_allocations where year = ${year
                   }
                 }
               );
+              mysql://bf3c3e4d049fbb:a4588d88@us-cdbr-east-06.cleardb.net/heroku_892cc308dac9724?reconnect=true
+              CLEARDB_DATABASE_URL
