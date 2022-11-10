@@ -73,54 +73,80 @@ router.post("/petty-cash-records", (req, res) => {
               });
             }
             if (totalAmountAllocated) {
-              dbConnection.query(`select(select sum(amount) from fund_allocations where year = ${year}) as totalInAYear`, (error, totalInAYear)=>{
-                if(error){
-                  console.log(error)
-                  return res.status(500).send({
-                    message: "Internal Database Error"
-                  })
-                }
-                if(totalAmountAllocated){
-                  dbConnection.query(
-                    `select(select initialamount from pettycashfund where month = ${month} and year = ${year}) - (select sum(amount) from fund_allocations where month = ${month} and year = ${year}) as balance`,
-                    (error, balance) => {
-                      if (error) {
-                        console.log(error);
-                        return res.status(500).send({
-                          message: "Internal  Database Error",
-                        });
-                      }
-                      if (balance) {
-                        dbConnection.query(
-                          `update pettycashfund set balance = ? where month = ${month} and year = ${year}`,
-                          [balance[0].balance],
-                          (error, result) => {
-                            if (error) {
-                              console.log(error);
-                              return res.status(500).send({
-                                message: "Internal  Database Error",
-                              });
+              dbConnection.query(
+                `select(select sum(amount) from fund_allocations where year = ${year}) as totalInAYear`,
+                (error, totalInAYear) => {
+                  if (error) {
+                    console.log(error);
+                    return res.status(500).send({
+                      message: "Internal Database Error",
+                    });
+                  }
+                  if (totalAmountAllocated) {
+                    dbConnection.query(
+                      `select(select initialamount from pettycashfund where month = ${month} and year = ${year}) - (select sum(amount) from fund_allocations where month = ${month} and year = ${year}) as balance`,
+                      (error, balance) => {
+                        if (error) {
+                          console.log(error);
+                          return res.status(500).send({
+                            message: "Internal  Database Error",
+                          });
+                        }
+                        if (balance) {
+                          dbConnection.query(
+                            `update pettycashfund set balance = ? where month = ${month} and year = ${year}`,
+                            [balance[0].balance],
+                            (error, result) => {
+                              if (error) {
+                                console.log(error);
+                                return res.status(500).send({
+                                  message: "Internal  Database Error",
+                                });
+                              }
+                              if (result) {
+                                return res.status(200).send([
+                                  {
+                                    initialAmount:
+                                      initialAmount[0].initialamount,
+                                    totalAmountAllocated:
+                                      totalAmountAllocated[0].totalInAMonth,
+                                    totalInAYear: totalInAYear[0].totalInAYear,
+                                    balance: balance[0].balance,
+                                  },
+                                ]);
+                              }
                             }
-                            if(result){
-                              return res.status(200).send([
-                                {
-                                  initialAmount: initialAmount[0].initialamount,
-                                  totalAmountAllocated: totalAmountAllocated[0].totalInAMonth,
-                                  totalInAYear: totalInAYear[0].totalInAYear,
-                                  balance:balance[0].balance
-                                }
-                              ])
-                            }
-                          }
-                        );
+                          );
+                        }
                       }
-                    }
-                  );
+                    );
+                  }
                 }
-               })
+              );
             }
           }
         );
+      }
+    }
+  );
+});
+
+//Loading Fund Allocations
+router.post("/fund-allocations", (req, res) => {
+  const month = req.body.month;
+  const year = req.body.year;
+
+  dbConnection.query(
+    `select amount, reason, date from fund_allocations where month = ${month} and year = ${year}`,
+    (error, result) => {
+      if(error){
+        console.log(error)
+        return res.status(500).send({
+          message: "Internal Database Error"
+        })
+      }
+      if(result){
+        return res.status(200).send(result)
       }
     }
   );
