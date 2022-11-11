@@ -84,10 +84,11 @@ router.post("/record-transaction", (req, res) => {
   const date = req.body.date;
   const allocationStatus = req.body.allocationStatus;
   const month = req.body.month
+  const year = req.body.year
 
   dbConnection.query(
-    `insert  into fund_allocations(amount, reason, employee_id, request_id, accountant_id, date, month) values(?,?,?,?,?,?,?)`,
-    [amount, reason, employeeId, requestId, accountantId, date, month],
+    `insert  into fund_allocations(amount, reason, employee_id, request_id, accountant_id, date, month, year) values(?,?,?,?,?,?,?,?)`,
+    [amount, reason, employeeId, requestId, accountantId, date, month, year],
     (error, result) => {
       if (error) {
         console.log(error);
