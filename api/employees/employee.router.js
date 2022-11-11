@@ -104,6 +104,27 @@ router.post("/employee-login", (req, res) => {
   );
 });
 
+
+//Getting user credentials
+router.post("/employee-data", (req,res)=>{
+  const email = req.body.email
+
+  dbConnection.query(`select firstName, lastName from employees where email = ?`, [email], (error, result)=>{
+    if(error){
+      console.log(error)
+      return res.status(500).send({
+        message: "Internal Database Error"
+      })
+    }
+    if(result){
+      return res.status(200).send({
+        firstName: result[0].firstName,
+        lastName: result[0].lastName
+      })
+    }
+  })
+})
+
 //Reset password
 router.put("/employee-reset", (req, res)=>{
   const email = req.body.email
