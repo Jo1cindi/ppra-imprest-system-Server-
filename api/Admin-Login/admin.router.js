@@ -107,7 +107,7 @@ router.post("/admin-login", (req, res) => {
   router.post("/admin-data", (req,res)=>{
     const email = req.body.email
   
-    dbConnection.query(`select firstName, lastName from admim where email = ?`, [email], (error, result)=>{
+    dbConnection.query(`select firstName, lastName from admin where email = ?`, [email], (error, result)=>{
       if(error){
         console.log(error)
         return res.status(500).send({
