@@ -4,6 +4,8 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
+
+//Sign up
 router.post("/employee-signup", (req, res) => {
   const firstName = req.body.firstName;
   const lastName = req.body.lastName;

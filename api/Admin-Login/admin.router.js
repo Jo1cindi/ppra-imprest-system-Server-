@@ -103,4 +103,25 @@ router.post("/admin-login", (req, res) => {
     );
   });
 
+  //Reset password
+router.put("/admin-reset", (req, res)=>{
+    const email = req.body.email
+    const newPassword = req.body.password;
+    bcrypt.hash(newPassword, 10).then((encryptedPassword)=>{
+     dbConnection.query(`update admin set password = ? where email = ?`,[encryptedPassword, email], 
+     (err, result)=>{
+       if(err){
+        res.status(500).send({
+          message: "error"
+        });
+       }
+       if(result){
+        res.status(200).send({
+          message: "passoword updated successfully"
+        });
+       }
+     });
+    });
+  });
+
 module.exports = router  
