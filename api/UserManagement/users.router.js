@@ -153,8 +153,8 @@ router.post("/remove-user", (req, res) => {
       }
       if (accountant.length > 0) {
         dbConnection.query(
-          `delete from accountant where email  = ?`,
-          [email],
+          `delete from accountant where accountant_id  = ?`,
+          [accountant[0].accountant_id],
           (error, results) => {
             if (error) {
               console.log(error);
@@ -179,8 +179,8 @@ router.post("/remove-user", (req, res) => {
           }
           if(financeManager.length > 0){
             dbConnection.query(
-              `delete from finance_manager where email  = ?`,
-              [email],
+              `delete from finance_manager where financemanager_id  = ?`,
+              [financeManager[0].financemanager_id],
               (error, results) => {
                 if (error) {
                   console.log(error);
@@ -205,8 +205,8 @@ router.post("/remove-user", (req, res) => {
               }
               if(employee.length > 0){
                 dbConnection.query(
-                  `delete from employees where email  = ?`,
-                  [email],
+                  `delete from employees where employee_id  = ?`,
+                  [employee[0].employee_id],
                   (error, results) => {
                     if (error) {
                       console.log(error);
