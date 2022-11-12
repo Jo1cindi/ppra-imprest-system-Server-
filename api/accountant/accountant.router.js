@@ -1,10 +1,8 @@
-const dbConnection = require("../../config/database")
+const dbConnection = require("../../config/database");
 const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
-
-
 
 //Register
 router.post("/accountant-signup", (req, res) => {
@@ -92,56 +90,40 @@ router.post("/accountant-login", (req, res) => {
             firstName: result[0].firstName,
             lastName: result[0].lastName,
             email: result[0].email,
-            accountantId: result[0].accountant_id
+            accountantId: result[0].accountant_id,
           });
         } else {
           return res.status(401).send({
             message: "ëmail or password is incorrect",
-          })
+          });
         }
       }
     }
   );
 });
 
-//Getting user credentials
-router.post("/accountant-data", (req,res)=>{
-  const email = req.body.email
-
-  dbConnection.query(`select firstName, lastName from accountant where email = ?`, [email], (error, result)=>{
-    if(error){
-      console.log(error)
-      return res.status(500).send({
-        message: "Internal Database Error"
-      })
-    }
-    if(result){
-      return res.status(200).send({
-        firstName: result[0].firstName,
-        lastName: result[0].lastName
-      })
-    }
-  })
-})
 
 //Reset password
-router.put("/accountant-reset", (req, res)=>{
-  const email = req.body.email
+router.put("/accountant-reset", (req, res) => {
+  const email = req.body.email;
   const newPassword = req.body.password;
-  bcrypt.hash(newPassword, 10).then((encryptedPassword)=>{
-   dbConnection.query(`update accountant set password = ? where email = ?`,[encryptedPassword, email], 
-   (err, result)=>{
-     if(err){
-      res.status(500).send({
-        message: "error"
-      });
-     }
-     if(result){
-      res.status(200).send({
-        message: "passoword updated successfully"
-      });
-     }
-   });
+  bcrypt.hash(newPassword, 10).then((encryptedPassword) => {
+    dbConnection.query(
+      `update accountant set password = ? where email = ?`,
+      [encryptedPassword, email],
+      (err, result) => {
+        if (err) {
+          res.status(500).send({
+            message: "error",
+          });
+        }
+        if (result) {
+          res.status(200).send({
+            message: "passoword updated successfully",
+          });
+        }
+      }
+    );
   });
 });
 

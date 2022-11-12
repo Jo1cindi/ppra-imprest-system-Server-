@@ -57,6 +57,9 @@ app.use("/api", pettyCash)
 const admin = require("./api/Admin-Login/admin.router")
 app.use("/api", admin)
 
+const users = require("./api/UserManagement/users.router")
+app.use("/api", users)
+
 app.listen(process.env.PORT || 3006, ()=>{
     console.log(`Server is perfectly running on ${process.env.PORT}`)
 })
