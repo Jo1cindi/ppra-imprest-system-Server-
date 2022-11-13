@@ -1,7 +1,7 @@
 const dbConnection = require("../../config/database");
 const router = require("express").Router();
 
-//Load Requests Notification for the employees
+//Load Requests Notification from the finance manager
 router.post("/load-notifications", (req, res) => {
   const email = req.body.email;
   dbConnection.query(
@@ -165,7 +165,7 @@ router.post("/viewed-allocation-notifications", (req, res) => {
       }
       if (results) {
         dbConnection.query(
-          `select amount_requested, request_date from requests where employee_id = ? and allocation_notification_status = "viewed"`,
+          `select request_id ,amount_requested, request_date from requests where employee_id = ? and allocation_notification_status = "viewed"`,
           [results[0].employee_id],
           (error, result) => {
             if (error) {

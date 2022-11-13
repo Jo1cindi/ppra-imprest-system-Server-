@@ -124,7 +124,7 @@ router.post("/admin-login", (req, res) => {
   })
 
   //Reset password
-router.put("/admin-reset", (req, res)=>{
+  router.put("/admin-reset", (req, res)=>{
     const email = req.body.email
     const newPassword = req.body.password;
     bcrypt.hash(newPassword, 10).then((encryptedPassword)=>{
