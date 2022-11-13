@@ -152,4 +152,24 @@ router.post("/load-fund-allocations", (req, res) => {
   );
 });
 
+
+//Getting balance
+router.post("/get-balance", (req, res)=>{
+  const month = req.body.month
+  const year = req.body.year
+
+  dbConnection.query(`select balance from pettycashfund where month = ${month} and year=${year}`, (error, result)=>{
+    if(error){
+      res.status(500).send({
+        message: "Internal Database Error"
+      })
+    }
+    if(result){
+      res.status(200).send({
+        balance: result[0].balance
+      })
+    }
+  })
+})
+
 module.exports = router;

@@ -104,7 +104,7 @@ router.post("/allocation-of-funds-notifications", (req, res) => {
       if (error) {
         console.log(error);
         return res.status(500).send({
-          message: "Internal Database Error",
+          message: "Internal Database Error"
         });
       }
       if (result) {
